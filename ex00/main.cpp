@@ -17,8 +17,16 @@
 
 #include "BitcoinExchange.hpp"
 
-int main(void)
+int main(int ac, char **av)
 {
-    BitcoinExchange  exchange("input.csv");
+    if (ac != 2)
+    {
+        std::cerr << "Error: could not open file." << std::endl;
+        return (1);
+    }
+    else
+    {
+        BitcoinExchange  exchange(av[1]);
+    }
     return (0);
 }

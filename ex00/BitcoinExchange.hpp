@@ -37,9 +37,6 @@ class   BitcoinExchange
         BitcoinExchange  &operator=(BitcoinExchange const &original);
 
         BitcoinExchange(const std::string &inputFile);
-        void printDatabase() const;
 };
-
-
 
 #endif

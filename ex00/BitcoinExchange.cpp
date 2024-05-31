@@ -61,21 +61,21 @@ void BitcoinExchange::loadFile(const std::string &inputFile)
     {
         std::istringstream ss(line);
         std::string date;
-        std::string rateStr;
-        float rate;
-        if (std::getline(ss, date, '|') && std::getline(ss, rateStr))
+        std::string valueStr;
+        float value;
+        if (std::getline(ss, date, '|') && std::getline(ss, valueStr))
         {
             try
             {
-                rate = std::stof(rateStr);
-                if (isValidDate(date) && isValidValue(rate))
+                value = std::stof(valueStr);
+                if (isValidDate(date) && isValidValue(value))
                 {
-                    database[date] = rate;
-                    std::cout << date << " => " << rate << std::endl;
+                    database[date] = value;
+                    std::cout << date << " => " << value << " = " << std::endl;
                 }
-                else if (rate < 0)
+                else if (value < 0)
                     std::cerr << "Error: not a positive number." << std::endl;
-                else if (rate > 1000)
+                else if (value > 1000)
                     std::cerr << "Error: too large a number." << std::endl;
                 else if (!isValidDate(date))
                 {
