@@ -1,6 +1,6 @@
 CXX			=	c++
 CXXFLAGS	=	-Wall -Werror -Wextra -std=c++98
-NAME		=	find
+NAME		=	btc
 SRCS		=	main.cpp BitcoinExchange.cpp
 OBJS		=	$(SRCS:.cpp=.o)
 HFS			=	BitcoinExchange.hpp
