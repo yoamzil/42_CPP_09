@@ -17,5 +17,27 @@
 #ifndef BITCOINEXCHANGE_HPP
 #define BITCOINEXCHANGE_HPP
 
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <map>
+
+class   BitcoinExchange
+{
+    private:
+        std::map<std::string, float>  database;
+        void    loadFile(const std::string &inputFile);
+
+    public:
+        BitcoinExchange();
+        ~BitcoinExchange();
+        BitcoinExchange(BitcoinExchange const &original);
+        BitcoinExchange  &operator=(BitcoinExchange const &original);
+
+        BitcoinExchange(const std::string &inputFile);
+        void printDatabase() const;
+};
+
+
 
 #endif

@@ -17,6 +17,10 @@
 
 #include "BitcoinExchange.hpp"
 
-int	main(void)
+int main(void)
 {
+    BitcoinExchange  exchange("input.csv");
+    exchange.printDatabase();
+    // std::cout << "hi"  << std::endl;
+    return (0);
 }
