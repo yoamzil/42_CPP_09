@@ -71,12 +71,17 @@ void BitcoinExchange::loadFile(const std::string &inputFile)
                 if (isValidDate(date) && isValidValue(rate))
                 {
                     database[date] = rate;
-                    std::cout << "Date: " << date << ", Rate: " << rate << std::endl;
+                    std::cout << date << " => " << rate << std::endl;
                 }
                 else if (rate < 0)
                     std::cerr << "Error: not a positive number." << std::endl;
                 else if (rate > 1000)
                     std::cerr << "Error: too large a number." << std::endl;
+                else if (!isValidDate(date))
+                {
+                    std::cerr << "Error: bad input => " << date <<std::endl;
+                
+                }
             }
             catch (const std::invalid_argument &)
             {
@@ -88,23 +93,39 @@ void BitcoinExchange::loadFile(const std::string &inputFile)
     }
 }
 
-void BitcoinExchange::printDatabase() const
-{
-    for (std::map<std::string, float>::const_iterator it = database.begin(); it != database.end(); ++it)
-    {
-        std::cout << "Date: " << it->first << ", Rate: " << it->second << '\n';
-    }
-}
-
 bool	BitcoinExchange::isValidDate(const std::string &date)
 {
+    if (date.length() != 11 || date[4] != '-' || date[7] != '-')
+    {
+        return (false);
+    }
+    int year, month, day;
+    try
+    {
+        year = std::stoi(date.substr(0, 4));
+        month = std::stoi(date.substr(5, 2));
+        day = std::stoi(date.substr(8, 2));
+    }
+    catch (const std::invalid_argument &)
+    {
+        return (false);
+    }
+    if (day < 1 || day > 31 || month < 1 || month > 12)
+        return (false);
+    if ((month == 4 || month == 6 || month == 9 || month == 11) && (day > 30))
+        return (false);
+    if (month == 2)
+    {
+        bool leapYear = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+        if (day > 29 || (day > 28 && !leapYear))
+            return (false);
+    }
+    return (true);
 }
 
 bool	BitcoinExchange::isValidValue(const float &value)
 {
-	if (value < 0)
-		return (false);
-	if (value > 1000)
+	if (value < 0 || value > 1000)
 		return (false);
 	return (true);
 }

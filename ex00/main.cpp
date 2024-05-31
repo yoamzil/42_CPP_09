@@ -20,6 +20,5 @@
 int main(void)
 {
     BitcoinExchange  exchange("input.csv");
-    // exchange.printDatabase();
     return (0);
 }
