@@ -26,14 +26,13 @@ BitcoinExchange::~BitcoinExchange()
     // std::cout << "BitcoinExchange destructor called" << std::endl;
 }
 
-
 BitcoinExchange::BitcoinExchange(BitcoinExchange const &original)
 {
     // std::cout << "BitcoinExchange copy constructor called" << std::endl;
     *this = original;
 }
 
-BitcoinExchange  &BitcoinExchange::operator=(BitcoinExchange const &original)
+BitcoinExchange &BitcoinExchange::operator=(BitcoinExchange const &original)
 {
     if (this != &original)
     {
@@ -48,27 +47,35 @@ BitcoinExchange::BitcoinExchange(const std::string &inputFile)
     loadFile(inputFile);
 }
 
-void    BitcoinExchange::loadFile(const std::string &inputFile)
+void BitcoinExchange::loadFile(const std::string &inputFile)
 {
-    std::ifstream   file(inputFile);
+    std::ifstream file(inputFile);
     if (!file.is_open())
     {
         std::cerr << "Error: Could not open file." << std::endl;
-        return ;
+        return;
     }
-    std::string     line;
+    std::string line;
     while (std::getline(file, line))
     {
-        std::istringstream   ss(line);
-        std::string         date;
+        std::istringstream ss(line);
+        std::string date;
         std::string rateStr;
-        float               rate;
+        float rate;
         if (std::getline(ss, date, '|') && std::getline(ss, rateStr))
         {
             try
             {
                 rate = std::stof(rateStr);
-                database[date] = rate;
+                if (rate >= 0 && rate <= 1000)
+                {
+                    database[date] = rate;
+                    std::cout << "Date: " << date << ", Rate: " << rate << std::endl;
+                }
+                else if (rate < 0)
+                    std::cerr << "Error: not a positive number." << std::endl;
+                else if (rate > 1000)
+                    std::cerr << "Error: too large a number." << std::endl;
             }
             catch (const std::invalid_argument &)
             {
@@ -76,14 +83,14 @@ void    BitcoinExchange::loadFile(const std::string &inputFile)
             }
         }
         else
-        {
             std::cerr << "Error: Could not parse line: " << line << std::endl;
-        }
     }
 }
 
-void BitcoinExchange::printDatabase() const {
-    for (std::map<std::string, float>::const_iterator it = database.begin(); it != database.end(); ++it) {
+void BitcoinExchange::printDatabase() const
+{
+    for (std::map<std::string, float>::const_iterator it = database.begin(); it != database.end(); ++it)
+    {
         std::cout << "Date: " << it->first << ", Rate: " << it->second << '\n';
     }
 }

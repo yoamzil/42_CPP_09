@@ -20,7 +20,6 @@
 int main(void)
 {
     BitcoinExchange  exchange("input.csv");
-    exchange.printDatabase();
-    // std::cout << "hi"  << std::endl;
+    // exchange.printDatabase();
     return (0);
 }
