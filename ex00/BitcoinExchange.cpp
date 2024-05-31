@@ -37,6 +37,7 @@ BitcoinExchange &BitcoinExchange::operator=(BitcoinExchange const &original)
     if (this != &original)
     {
         // std::cout << "BitcoinExchange assignation operator called" << std::endl;
+		database = original.database;
     }
     return (*this);
 }
@@ -67,7 +68,7 @@ void BitcoinExchange::loadFile(const std::string &inputFile)
             try
             {
                 rate = std::stof(rateStr);
-                if (rate >= 0 && rate <= 1000)
+                if (isValidDate(date) && isValidValue(rate))
                 {
                     database[date] = rate;
                     std::cout << "Date: " << date << ", Rate: " << rate << std::endl;
@@ -79,11 +80,11 @@ void BitcoinExchange::loadFile(const std::string &inputFile)
             }
             catch (const std::invalid_argument &)
             {
-                std::cerr << "Error: Could not parse rate for line: " << line << std::endl;
+                std::cerr << "Error: Could not parse this line: " << line << std::endl;
             }
         }
         else
-            std::cerr << "Error: Could not parse line: " << line << std::endl;
+            std::cerr << "Error: Could not parse this line: " << line << std::endl;
     }
 }
 
@@ -93,4 +94,17 @@ void BitcoinExchange::printDatabase() const
     {
         std::cout << "Date: " << it->first << ", Rate: " << it->second << '\n';
     }
+}
+
+bool	BitcoinExchange::isValidDate(const std::string &date)
+{
+}
+
+bool	BitcoinExchange::isValidValue(const float &value)
+{
+	if (value < 0)
+		return (false);
+	if (value > 1000)
+		return (false);
+	return (true);
 }

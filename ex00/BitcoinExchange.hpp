@@ -27,6 +27,8 @@ class   BitcoinExchange
     private:
         std::map<std::string, float>  database;
         void    loadFile(const std::string &inputFile);
+		bool	isValidDate(const std::string &date);
+		bool	isValidValue(const float &value);
 
     public:
         BitcoinExchange();
