@@ -26,7 +26,8 @@ int main(int ac, char **av)
     }
     else
     {
-        BitcoinExchange  exchange(av[1]);
+        BitcoinExchange exchange;
+        exchange.exchange(av[1]);
     }
     return (0);
 }

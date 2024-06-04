@@ -37,19 +37,40 @@ BitcoinExchange &BitcoinExchange::operator=(BitcoinExchange const &original)
     if (this != &original)
     {
         // std::cout << "BitcoinExchange assignation operator called" << std::endl;
-		database = original.database;
+        database = original.database;
     }
     return (*this);
 }
 
-BitcoinExchange::BitcoinExchange(const std::string &inputFile)
+void BitcoinExchange::exchange(const std::string &inputFile)
 {
     // std::cout << "BitcoinExchange constructor called" << std::endl;
-    loadFile(inputFile);
+    loadFile(inputFile, "data.csv");
 }
 
-void BitcoinExchange::loadFile(const std::string &inputFile)
+void BitcoinExchange::loadFile(const std::string &inputFile, const std::string &outputFile)
 {
+    // store the data from the database to the map
+    std::ifstream dbFile(outputFile);
+    if (!dbFile.is_open())
+    {
+        std::cerr << "Error: Could not open dbFile." << std::endl;
+        return;
+    }
+    std::string dbLine;
+    while (std::getline(dbFile, dbLine))
+    {
+        std::istringstream ss(dbLine);
+        std::string dbDate;
+        std::getline(ss, dbDate, ',');
+        std::string rateStr;
+        std::getline(ss, rateStr);
+        float rate = std::atof(rateStr.c_str());
+        database[dbDate] = rate;
+        // std::cout << dbDate << "=> " << rate << std::endl;
+    }
+
+    // load the data from the input file
     std::ifstream file(inputFile);
     if (!file.is_open())
     {
@@ -63,15 +84,21 @@ void BitcoinExchange::loadFile(const std::string &inputFile)
         std::string date;
         std::string valueStr;
         float value;
-        if (std::getline(ss, date, '|') && std::getline(ss, valueStr))
+        if (std::getline(ss, date, ' ') && std::getline(ss, valueStr))
         {
             try
             {
+                // print the database map
+                for (std::map<std::string, float>::iterator it = database.begin(); it != database.end(); ++it)
+                {
+                    std::cout << "date in database:" << it->first << "and its length is:" << it->first.length() << std::endl;
+                    std::cout << "date in input file:" << date << "and its length is:" << date.length() << std::endl;
+                    exit(0);
+                }
                 value = std::stof(valueStr);
                 if (isValidDate(date) && isValidValue(value))
                 {
-                    database[date] = value;
-                    std::cout << date << " => " << value << " = " << std::endl;
+                    // Now I need to check if the date is in the database if not I take the date before it
                 }
                 else if (value < 0)
                     std::cerr << "Error: not a positive number." << std::endl;
@@ -79,8 +106,7 @@ void BitcoinExchange::loadFile(const std::string &inputFile)
                     std::cerr << "Error: too large a number." << std::endl;
                 else if (!isValidDate(date))
                 {
-                    std::cerr << "Error: bad input => " << date <<std::endl;
-                
+                    std::cerr << "Error: bad input => " << date << std::endl;
                 }
             }
             catch (const std::invalid_argument &)
@@ -93,9 +119,9 @@ void BitcoinExchange::loadFile(const std::string &inputFile)
     }
 }
 
-bool	BitcoinExchange::isValidDate(const std::string &date)
+bool BitcoinExchange::isValidDate(const std::string &date)
 {
-    if (date.length() != 11 || date[4] != '-' || date[7] != '-')
+    if (date.length() != 10 || date[4] != '-' || date[7] != '-')
     {
         return (false);
     }
@@ -123,9 +149,9 @@ bool	BitcoinExchange::isValidDate(const std::string &date)
     return (true);
 }
 
-bool	BitcoinExchange::isValidValue(const float &value)
+bool BitcoinExchange::isValidValue(const float &value)
 {
-	if (value < 0 || value > 1000)
-		return (false);
-	return (true);
+    if (value < 0 || value > 1000)
+        return (false);
+    return (true);
 }

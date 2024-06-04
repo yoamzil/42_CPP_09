@@ -26,7 +26,7 @@ class   BitcoinExchange
 {
     private:
         std::map<std::string, float>  database;
-        void    loadFile(const std::string &inputFile);
+        void    loadFile(const std::string &inputFile, const std::string &outputFile);
 		bool	isValidDate(const std::string &date);
 		bool	isValidValue(const float &value);
 
@@ -36,7 +36,7 @@ class   BitcoinExchange
         BitcoinExchange(BitcoinExchange const &original);
         BitcoinExchange  &operator=(BitcoinExchange const &original);
 
-        BitcoinExchange(const std::string &inputFile);
+        void    exchange(const std::string &inputFile);
 };
 
 #endif
