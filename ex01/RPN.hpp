@@ -20,16 +20,20 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <map>
+#include <stack>
 
 class   RPN
 {
 	private:
+        std::stack<int> stack;
+
 	public:
 		RPN();
 		~RPN();
 		RPN(RPN const &original);
 		RPN  &operator=(RPN const &original);
+
+        int     evaluate(std::string str);
 };
 
 #endif
