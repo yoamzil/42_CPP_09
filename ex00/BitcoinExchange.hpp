@@ -24,19 +24,21 @@
 
 class   BitcoinExchange
 {
-    private:
-        std::map<std::string, float>  database;
-        void    loadFile(const std::string &inputFile, const std::string &outputFile);
+	private:
+		std::map<std::string, float>	database;
+
+		void	loadFiles(const std::string &inputFile, const std::string &outputFile);
+		bool    isValidFormat(const std::string &line);
 		bool	isValidDate(const std::string &date);
 		bool	isValidValue(const float &value);
 
-    public:
-        BitcoinExchange();
-        ~BitcoinExchange();
-        BitcoinExchange(BitcoinExchange const &original);
-        BitcoinExchange  &operator=(BitcoinExchange const &original);
+	public:
+		BitcoinExchange();
+		~BitcoinExchange();
+		BitcoinExchange(BitcoinExchange const &original);
+		BitcoinExchange  &operator=(BitcoinExchange const &original);
 
-        void    exchange(const std::string &inputFile);
+		void	exchange(const std::string &inputFile);
 };
 
 #endif
