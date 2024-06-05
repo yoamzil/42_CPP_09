@@ -85,7 +85,7 @@ bool	BitcoinExchange::isValidValue(const float &value)
 
 bool	BitcoinExchange::isValidFormat(const std::string &line)
 {
-	if (line != "date | value" && (line.length() != 14 || line[11] != '|'))
+	if (line != "date | value" && (line[10] != ' ' || line[11] != '|' || line[12] != ' '))
 		return (false);
 	return (true);
 }
@@ -131,14 +131,15 @@ void	BitcoinExchange::loadFiles(const std::string &inputFile, const std::string 
 		{
 			std::istringstream ss2(valueStr);
 			std::getline(ss2, valueStr, ' ') && std::getline(ss2, valueStr);
-			if (!isValidFormat(line))
+			// std::cout << date << std::endl;
+			if ((!isValidFormat(line) || !isValidDate(date)) && (line != "date | value"))
 			{
-				std::cerr << line << std::endl;
-				std::cerr << "Error: Date | Value format isn't respected." << std::endl;
-				return;
+				std::cerr << "Error: bad input => " << line << std::endl;
 			}
 			try
 			{
+				if (line == "date | value")
+					continue;
 				value = std::stof(valueStr);
 				if (isValidDate(date) && isValidValue(value))
 				{
@@ -165,10 +166,6 @@ void	BitcoinExchange::loadFiles(const std::string &inputFile, const std::string 
 					std::cerr << "Error: not a positive number." << std::endl;
 				else if (value > 1000)
 					std::cerr << "Error: too large a number." << std::endl;
-				else if (!isValidDate(date))
-				{
-					std::cerr << "Error: bad input => " << date << std::endl;
-				}
 			}
 			catch (const std::invalid_argument &)
 			{
@@ -176,7 +173,7 @@ void	BitcoinExchange::loadFiles(const std::string &inputFile, const std::string 
 			}
 		}
 		else
-			std::cerr << "Error: Could not parse this line: " << line << std::endl;
+			std::cerr << "Error: bad input => " << line << std::endl;
 	}
 }
 
