@@ -86,19 +86,38 @@ void BitcoinExchange::loadFile(const std::string &inputFile, const std::string &
         float value;
         if (std::getline(ss, date, ' ') && std::getline(ss, valueStr))
         {
+            std::istringstream  ss2(valueStr);
+            std::getline(ss2, valueStr, ' ') && std::getline(ss2, valueStr);
             try
             {
-                // print the database map
-                for (std::map<std::string, float>::iterator it = database.begin(); it != database.end(); ++it)
-                {
-                    std::cout << "date in database:" << it->first << "and its length is:" << it->first.length() << std::endl;
-                    std::cout << "date in input file:" << date << "and its length is:" << date.length() << std::endl;
-                    exit(0);
-                }
+                // for (std::map<std::string, float>::iterator it = database.begin(); it != database.end(); ++it)
+                // {
+                //     std::cout << "date in database:" << it->first << "and its length is:" << it->first.length() << std::endl;
+                //     std::cout << "date in input file:" << date << "and its length is:" << date.length() << std::endl;
+                //     exit(0);
+                // }
                 value = std::stof(valueStr);
                 if (isValidDate(date) && isValidValue(value))
                 {
                     // Now I need to check if the date is in the database if not I take the date before it
+                    std::map<std::string, float>::iterator it = database.find(date);
+                    if (it != database.end())
+                    {
+                        std::cout << date << " => " << value << " = " << value * it->second << std::endl;
+                    }
+                    else
+                    {
+                        std::map<std::string, float>::iterator it = database.lower_bound(date);
+                        if (it == database.begin())
+                        {
+                            std::cerr << "Error: no data" << std::endl;
+                        }
+                        else
+                        {
+                            --it;
+                                std::cout << date << " => " << value << " = " << value * it->second << std::endl;
+                        }
+                    }
                 }
                 else if (value < 0)
                     std::cerr << "Error: not a positive number." << std::endl;
@@ -137,9 +156,13 @@ bool BitcoinExchange::isValidDate(const std::string &date)
         return (false);
     }
     if (day < 1 || day > 31 || month < 1 || month > 12)
+    {
         return (false);
+    }
     if ((month == 4 || month == 6 || month == 9 || month == 11) && (day > 30))
+    {
         return (false);
+    }
     if (month == 2)
     {
         bool leapYear = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
