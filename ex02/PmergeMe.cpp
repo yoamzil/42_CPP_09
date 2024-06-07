@@ -90,8 +90,8 @@ void    PmergeMe::printSequence(std::string state, std::vector<int> numbers)
 
 void    PmergeMe::merge(std::vector<int> leftArray, std::vector<int> rightArray, std::vector<int> &numbers)
 {
-    int leftSize = leftArray.size() / 2;
-    int rightSize = rightArray.size() - leftSize;
+    int leftSize = leftArray.size();
+    int rightSize = rightArray.size();
     int i = 0, l = 0, r = 0;
 
     while (l < leftSize && r < rightSize)
@@ -107,7 +107,7 @@ void    PmergeMe::merge(std::vector<int> leftArray, std::vector<int> rightArray,
         numbers[i++] = rightArray[r++];
 }
 
-void    PmergeMe::mergeSort(std::vector<int> numbers)
+void    PmergeMe::mergeSort(std::vector<int> &numbers)
 {
     int     size = numbers.size();
 

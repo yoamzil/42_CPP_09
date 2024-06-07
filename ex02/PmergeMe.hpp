@@ -29,7 +29,7 @@ class   PmergeMe
         static std::vector<int>     parseInput(int ac, char **av);
         static void                 isValidInput(std::vector<int> numbers);
         static void                 printSequence(std::string state, std::vector<int> numbers);
-        static void                 mergeSort(std::vector<int> numbers);
+        static void                 mergeSort(std::vector<int> &numbers);
         static void                 merge(std::vector<int> leftArray, std::vector<int> rightArray, std::vector<int> &numbers);
 
 	public:
