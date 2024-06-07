@@ -26,12 +26,16 @@
 class   PmergeMe
 {
 	private:
+        static std::vector<int>     parseInput(int ac, char **av);
+        static void                 isValidInput(std::vector<int> numbers);
 
 	public:
 		PmergeMe();
 		~PmergeMe();
 		PmergeMe(PmergeMe const &original);
 		PmergeMe  &operator=(PmergeMe const &original);
+
+        static void                 run(int ac, char **av);
 };
 
 #endif

@@ -41,3 +41,53 @@ PmergeMe &PmergeMe::operator=(PmergeMe const &original)
 	}
 	return (*this);
 }
+
+std::vector<int>    PmergeMe::parseInput(int ac, char **av)
+{
+    if (ac < 2)
+    {
+        throw std::invalid_argument("Not enough arguments provided.");
+    }
+    std::vector<int> numbers;
+    for (int i = 1; i < ac; i++)
+    {
+        std::istringstream iss(av[i]);
+        int number;
+        if (!(iss >> number))
+        {
+            throw std::invalid_argument("Invalid argument provided.");
+        }
+        numbers.push_back(number);
+    }
+    return (numbers);
+}
+
+void    PmergeMe::isValidInput(std::vector<int> numbers)
+{
+    if (numbers.size() < 2)
+    {
+        std::cerr << "Error: Not enough numbers provided." << std::endl;
+        return ;
+    }
+    for (unsigned long i = 0; i <= numbers.size(); i++)
+    {
+        if (numbers[i] < 0)
+        {
+            std::cerr << "Error: Negative numbers are not allowed." << std::endl;
+            return ;
+        }
+    }
+}
+
+void    PmergeMe::run(int ac, char **av)
+{
+    try
+    {
+        std::vector<int> numbers = parseInput(ac, av);
+        isValidInput(numbers);
+    }
+    catch (std::exception &e)
+    {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+}

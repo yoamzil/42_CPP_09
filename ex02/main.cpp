@@ -18,18 +18,6 @@
 
 int main(int ac, char **av)
 {
-    if (ac != 2)
-    {
-        std::cerr << "Error: Invalid number of arguments" << std::endl;
-        return (1);
-    }
-    try
-    {
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << e.what() << std::endl;
-        return 1;
-    }
+    PmergeMe::run(ac, av);
     return (0);
 }
