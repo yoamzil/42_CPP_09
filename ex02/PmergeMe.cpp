@@ -69,14 +69,66 @@ void    PmergeMe::isValidInput(std::vector<int> numbers)
         std::cerr << "Error: Not enough numbers provided." << std::endl;
         return ;
     }
-    for (unsigned long i = 0; i <= numbers.size(); i++)
+    for (unsigned long i = 0; i < numbers.size(); i++)
     {
         if (numbers[i] < 0)
         {
-            std::cerr << "Error: Negative numbers are not allowed." << std::endl;
-            return ;
+            throw std::invalid_argument("Negative numbers are not allowed.");
         }
     }
+}
+
+void    PmergeMe::printSequence(std::string state, std::vector<int> numbers)
+{
+    std::cout << state << ": ";
+    for (unsigned long i = 0; i < numbers.size(); i++)
+    {
+        std::cout << numbers[i] << " ";
+    }
+    std::cout << std::endl;
+}
+
+void    PmergeMe::merge(std::vector<int> leftArray, std::vector<int> rightArray, std::vector<int> &numbers)
+{
+    int leftSize = leftArray.size() / 2;
+    int rightSize = rightArray.size() - leftSize;
+    int i = 0, l = 0, r = 0;
+
+    while (l < leftSize && r < rightSize)
+    {
+        if (leftArray[l] < rightArray[r])
+            numbers[i++] = leftArray[l++];
+        else
+            numbers[i++] = rightArray[r++];
+    }
+    while (l < leftSize)
+        numbers[i++] = leftArray[l++];
+    while (r < rightSize)
+        numbers[i++] = rightArray[r++];
+}
+
+void    PmergeMe::mergeSort(std::vector<int> numbers)
+{
+    int     size = numbers.size();
+
+    if (size <= 1)
+        return ;
+
+    int                 middle = size / 2;
+    std::vector<int>    leftArray = std::vector<int>(numbers.begin(), numbers.begin() + middle);
+    std::vector<int>    rightArray = std::vector<int>(numbers.begin() + middle, numbers.end());
+
+    int i = 0, j = 0;
+    for (; i < size; i++)
+    {
+        if (i < middle)
+            leftArray[i] = numbers[i];
+        else
+            rightArray[j++] = numbers[i];
+    }
+    mergeSort(leftArray);
+    mergeSort(rightArray);
+    merge(leftArray, rightArray, numbers);
 }
 
 void    PmergeMe::run(int ac, char **av)
@@ -85,6 +137,9 @@ void    PmergeMe::run(int ac, char **av)
     {
         std::vector<int> numbers = parseInput(ac, av);
         isValidInput(numbers);
+        printSequence("Before", numbers);
+        mergeSort(numbers);
+        printSequence("After", numbers);
     }
     catch (std::exception &e)
     {
