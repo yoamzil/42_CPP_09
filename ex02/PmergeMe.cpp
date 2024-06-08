@@ -88,47 +88,68 @@ void    PmergeMe::printSequence(std::string state, std::vector<int> numbers)
     std::cout << std::endl;
 }
 
-void    PmergeMe::merge(std::vector<int> leftArray, std::vector<int> rightArray, std::vector<int> &numbers)
+void    PmergeMe::printSequence(std::string state, std::list<int> numbers)
 {
-    int leftSize = leftArray.size();
-    int rightSize = rightArray.size();
-    int i = 0, l = 0, r = 0;
-
-    while (l < leftSize && r < rightSize)
+    std::cout << state << ": ";
+    for (std::list<int>::iterator it = numbers.begin(); it != numbers.end(); it++)
     {
-        if (leftArray[l] < rightArray[r])
-            numbers[i++] = leftArray[l++];
-        else
-            numbers[i++] = rightArray[r++];
+        std::cout << *it << " ";
     }
-    while (l < leftSize)
-        numbers[i++] = leftArray[l++];
-    while (r < rightSize)
-        numbers[i++] = rightArray[r++];
+    std::cout << std::endl;
 }
 
-void    PmergeMe::mergeSort(std::vector<int> &numbers)
+template <typename T>
+void    PmergeMe::merge(T leftArray, T rightArray, T &numbers)
 {
-    int     size = numbers.size();
+    typename T::iterator it = numbers.begin();
+    typename T::iterator leftIt = leftArray.begin();
+    typename T::iterator rightIt = rightArray.begin();
 
+//     int leftSize = leftArray.size();
+//     int rightSize = rightArray.size();
+//     int i = 0, leftIt = 0, rightIt = 0;
+
+    while (leftIt != leftArray.end() && rightIt != rightArray.end())
+    {
+        if (*leftIt < *rightIt)
+            *it++ = *leftIt++;
+        else
+            *it++ = *rightIt++;
+    }
+    while (leftIt != leftArray.end())
+        *it++ = *leftIt++;
+    while (rightIt != rightArray.end())
+        *it++ = *rightIt++;
+}
+
+template <typename T>
+void    PmergeMe::mergeSort(T &numbers)
+{
+    size_t  size = numbers.size();
     if (size <= 1)
         return ;
 
-    int                 middle = size / 2;
-    std::vector<int>    leftArray = std::vector<int>(numbers.begin(), numbers.begin() + middle);
-    std::vector<int>    rightArray = std::vector<int>(numbers.begin() + middle, numbers.end());
 
-    int i = 0, j = 0;
-    for (; i < size; i++)
-    {
-        if (i < middle)
-            leftArray[i] = numbers[i];
-        else
-            rightArray[j++] = numbers[i];
-    }
+    typename T::iterator middle = numbers.begin();
+    std::advance(middle, size / 2);
+
+    T leftArray(numbers.begin(), middle);
+    T rightArray(middle, numbers.end());
+
     mergeSort(leftArray);
     mergeSort(rightArray);
     merge(leftArray, rightArray, numbers);
+}
+
+template <typename T>
+void    PmergeMe::mergeAndPrintExecutionTime(const T& container, const std::string& containerName)
+{
+    T copy = container;
+    clock_t start = clock();
+    mergeSort(copy);
+    clock_t end = clock();
+    double executionTime = double(end - start) / CLOCKS_PER_SEC * 1000;
+    std::cout << "Time to process a range of " << container.size() << " elements with " << containerName << ": " << executionTime << "ms" << std::endl;
 }
 
 void    PmergeMe::run(int ac, char **av)
@@ -138,8 +159,16 @@ void    PmergeMe::run(int ac, char **av)
         std::vector<int> numbers = parseInput(ac, av);
         isValidInput(numbers);
         printSequence("Before", numbers);
-        mergeSort(numbers);
-        printSequence("After", numbers);
+
+        std::vector<int> numbersVectorCopy = numbers;
+        mergeSort(numbersVectorCopy);
+        printSequence("After", numbersVectorCopy);
+
+        
+        mergeAndPrintExecutionTime(numbers, "std::vector");
+
+        std::list<int> numbersListCopy(numbers.begin(), numbers.end());
+        mergeAndPrintExecutionTime(numbersListCopy, "std::list");
     }
     catch (std::exception &e)
     {
